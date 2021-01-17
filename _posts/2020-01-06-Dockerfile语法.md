@@ -1,7 +1,3 @@
-# Dockerfile语法
-
-[toc]
-
 ## `docker build`用法
 
 `docker build` 命令从一个`Dockerfile`和一个`context`创建一个镜像。构建的上下文（context）指的是一系列同通过`PATH`或`URL`指定的文件。`PATH`是本地文件系统的一个目录，`URL`是一个Git存储库。上下文是递归处理的，所以`PATH`包含了任何的子路径下的文件，`URL`包含了仓库和它的子模块。例如使用当前目录作为上下文：
