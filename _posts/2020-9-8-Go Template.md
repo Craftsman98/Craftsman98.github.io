@@ -1,5 +1,6 @@
-# Go Template
-
+---
+tags: "Go Template" Go
+---
 ```yaml
 # 渲染数据可以是go的所有类型
 # 渲染数据本身

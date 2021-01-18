@@ -1,6 +1,6 @@
 ---
-title: Dockerfile语法
-key: docker
+title: Dockerfile语法（待更新）
+tags: Docker Kubernetes
 ---
 
 ## `docker build`用法
