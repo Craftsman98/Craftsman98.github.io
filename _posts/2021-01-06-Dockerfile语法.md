@@ -1,8 +1,4 @@
-# Dockerfile语法
-
-[toc]
-
-## `docker build`用法
+## docker build 用法
 
 `docker build` 命令从一个`Dockerfile`和一个`context`创建一个镜像。构建的上下文（context）指的是一系列同通过`PATH`或`URL`指定的文件。`PATH`是本地文件系统的一个目录，`URL`是一个Git存储库。上下文是递归处理的，所以`PATH`包含了任何的子路径下的文件，`URL`包含了仓库和它的子模块。例如使用当前目录作为上下文：
 
@@ -51,7 +47,7 @@ INSTRUCTION arguments
 * syntax
 * escape
 
-### `syntax`
+### syntax
 
 语法规则：
 
@@ -78,7 +74,7 @@ INSTRUCTION arguments
 * 使用最新的功能而无需升级daemon程序
 * 试用新的实验性或第三方的功能
 
-### `escape`
+### escape
 
 语法规则，下面的两行都可以：
 
@@ -143,7 +139,7 @@ FROM [--platform=<platform>] <image>[@<digest>] [AS <name>]
 
 在`FROM`引用多平台的镜像时，可选的`--platform `标志可以指定镜像的平台。例如`linux/amd64`、`linux/arm64`或`Windows/amd64`。默认情况下，使用构建请求的目标平台。可以在此标志的值中使用全局构建参数。
 
-### 理解`ARG`与`FROM`的交互
+### 理解 ARG 与 FROM 的交互
 
 ```dockerfile
 ARG  CODE_VERSION=latest
