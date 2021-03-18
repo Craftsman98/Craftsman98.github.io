@@ -1,7 +1,6 @@
----
-title: Dockerfile语法（待更新）
-tags: Docker Kubernetes
----
+# Dockerfile语法
+
+[toc]
 
 ## `docker build`用法
 
@@ -219,4 +218,77 @@ CMD ["/usr/bin/wc", "--help"]
 > `RUN`命令在构建时运行并提交结果；`CMD`命令在构建时不执行任何操作，只会指定一个容器运行的预期命令。
 
 ## LABEL
+
+`LABEL <key>=<value> <key>=<value> <key>=<value> ...`
+
+`LABEL`指令是为镜像添加元数据的，一个`LABEL`就是一个键值对。如果要在值中包含空格，那么需要使用双引号。下面是一些用例：
+
+```dockerfile
+LABEL "com.example.vendor"="ACME Incorporated"
+LABEL com.example.label-with-value="foo"
+LABEL version="1.0"
+LABEL description="This text illustrates \
+that label-values can span multiple lines."
+```
+
+一个镜像可以拥有多个Label。在Docker 1.0之前，将多个Label声明在同一行将会缩小镜像的大小，但是现在声明在多行和一行是相同的效果。基础镜像中的Label将会被继承到你的镜像中，如果一个Label已经存在并且拥有不同的值，那么较新的值会覆盖之前的值。为了查看一个镜像的Label，使用`docker image inspect`命令，可以使用`--format`选项来仅仅展示Labels：
+
+```sh
+docker image inspect --format={{".Config.Labels"}} myimage
+```
+
+## EXPOSE
+
+```dockerfile
+EXPOSE <port> [<port>/<protocol>...]
+```
+
+`EXPOSE`命令指定了容器运行时监听的端口，你可以指定端口监听TCP或者UDP，默认是TCP。`EXPOSE`命令并不实际的暴露端口，它的作用像是文档一样供构建镜像的人和运行镜像的人了解计划使用哪个端口来暴露。要在容器运行的时候实际暴露端口，请在`docker run`使使用`-p`标志并暴露映射一个或多个端口，或者使用`-P`标志来暴露所有端口并且将它们映射到高阶的端口。
+
+```dockerfile
+EXPOSE 80
+# 上面这种方式只暴露了tcp端口，如果要同时暴露tcp和udp，请分别指定。
+EXPOSE 80/udp
+EXPOSE 80/tcp
+```
+
+无论`EXPOSE`如何设置，都可以在运行时使用`-p`标志覆盖它们。
+
+```sh
+docker run -p 80:80/tcp -p 80:80/udp ...
+```
+
+要在主机端口上设置重定向，请参阅[使用`-P`标志](https://docs.docker.com/engine/reference/run/#expose-incoming-ports)。
+
+## ENV
+
+```dockerfile
+ENV <key>=<value> ...
+```
+
+ENV命令设置环境变量的键值对，这个键值对在后续的构建过程中作为环境变量，在许多情况下也可以进行内联替换。引号和反斜杠可以用于在值中包含空格。
+
+```dockerfile
+ENV MY_NAME="John Doe"
+ENV MY_DOG=Rex\ The\ Dog
+ENV MY_CAT=fluffy
+# 也可以将多个键值对声明在一条命令中，效果相同
+ENV MY_NAME="John Doe" MY_DOG=Rex\ The\ Dog \
+    MY_CAT=fluffy
+```
+
+使用结果镜像运行容器时，使用`ENV`命令设置的环境变量将会被保留。可以使用`docker inspect`查看变量，使用`docker run --env <key>=<value>`进行覆盖。
+
+环境变量持久化到容器中可能会造成不可控的影响，如果一个环境变量只在构建过程中起作用，应使用一条命令来单独设置：
+
+```dockerfile
+RUN DEBIAN_FRONTEND=noninteractive apt-get update && apt-get install -y ...
+```
+
+或者使用`ARG`命令，不会持久到最终的镜像中：
+
+```dockerfile
+ARG DEBIAN_FRONTEND=noninteractive
+RUN apt-get update && apt-get install -y ...
+```
 
